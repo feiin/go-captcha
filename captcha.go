@@ -5,32 +5,75 @@ import (
 	"encoding/base64"
 	"fmt"
 	"image"
-	// "image/color"
+	"image/color"
 	"image/png"
 	"os"
 )
 
+type Config struct {
+	FrontColors    []color.Color
+	BackgroupColor color.Color
+}
+
 type Captcha struct {
 	Width  int
 	Height int
+	Config Config
 }
 
 func NewCaptcha(width, height int) *Captcha {
-	return &Captcha{Width: width, Height: height}
+	cp := Captcha{Width: width, Height: height}
+
+	config := Config{}
+	config.FrontColors = []color.Color{
+		color.RGBA{R: uint8(66), G: uint8(153), B: uint8(244), A: uint8(255)},
+		color.RGBA{R: uint8(234), G: uint8(67), B: uint8(53), A: uint8(255)},
+		color.RGBA{R: uint8(251), G: uint8(188), B: uint8(5), A: uint8(255)},
+		color.RGBA{R: uint8(52), G: uint8(168), B: uint8(83), A: uint8(255)},
+	}
+	config.BackgroupColor = color.White
+
+	cp.Config = config
+	return &cp
+
+}
+
+//SetFontColors 设置字体颜色
+func (cp *Captcha) SetFontColors(colors ...color.Color) {
+	if len(colors) == 0 {
+		return
+	}
+
+	cp.Config.FrontColors = cp.Config.FrontColors[:0]
+	for _, cr := range colors {
+		cp.Config.FrontColors = append(cp.Config.FrontColors, cr)
+	}
+
+}
+
+//SetBackgroundColor 设置背景颜色
+func (cp *Captcha) SetBackgroundColor(color color.Color) {
+	cp.Config.BackgroupColor = color
 }
 
 func (cp *Captcha) GenCaptchaImage() (string, error) {
+
 	c := Canvas{
 		Width:  cp.Width,
 		Height: cp.Height,
 		NRGBA:  image.NewNRGBA(image.Rect(0, 0, cp.Width, cp.Height)),
+		Config: cp.Config,
 	}
+
+	c.DrawBackgroud()
 
 	c.DrawLines(5)
 
-	c.DrawString("测试阿斯蒂")
+	c.DrawString("3567中")
 
 	c.DrawCircles(120)
+
+	// c.DrawBezierLines(5)
 
 	imageBytes, err := encodingWithPng(c)
 
