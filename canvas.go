@@ -1,17 +1,15 @@
 package captcha
 
 import (
-	// "fmt"
-	"image"
-	"image/draw"
-
 	"embed"
-	// "fmt"
 	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
-	// "image"
+	"image"
 	"image/color"
+	"image/draw"
 	"math"
+	"unicode/utf8"
+
 	"math/rand"
 	"time"
 )
@@ -144,14 +142,53 @@ func (c *Canvas) DrawBezierLines(lineCount int) {
 
 }
 
-func (c *Canvas) DrawString(text string) {
+//getFontPostions 获取所有字体随机位置
+func (c *Canvas) getFontPostions(text string) []Point {
 
-	var drawPos []DrawPos
-	for _, ch := range text {
+	chCount := utf8.RuneCountInString(text)
 
-		pos := c.randomFontPosition(56)
+	var points []Point
+	if c.Config.Style == CaptchaStyle_Normal {
+
+		padding := c.Config.FontSize / 2
+
+		span := (c.Width - padding*2) / chCount
+		y := (c.Height + c.Config.FontSize) / 2
+
+		for i := 0; i < chCount; i++ {
+			x := padding + span*i
+			p := Point{X: x, Y: y}
+			points = append(points, p)
+		}
+
+	} else {
+
+		for i := 0; i < chCount; i++ {
+			p := c.randomFontPosition(56)
+			points = append(points, p)
+		}
+	}
+
+	return points
+}
+
+//DrawString 绘制文字验证码
+func (c *Canvas) DrawString(text string) []DrawRect {
+
+	var drawRects []DrawRect
+	textPos := c.getFontPostions(text)
+
+	for index, ch := range text {
+
+		pos := textPos[index]
 
 		fontImg, areaPoint := c.DrawFont(string(ch), c.Config.FontColors)
+
+		// if c.Config.Style == CaptchaStyle_Normal {
+		// 	//居中显示
+		// 	pos.Y = (c.Height + areaPoint.MaxY) / 2
+		// 	fmt.Printf("pos %+v - %+v;", pos, fontImg.Bounds().Size())
+		// }
 
 		minX := areaPoint.MinX
 		maxX := areaPoint.MaxX
@@ -172,15 +209,17 @@ func (c *Canvas) DrawString(text string) {
 			}
 		}
 
-		var dp DrawPos
+		var dp DrawRect
 		dp.X = minX + pos.X
 		dp.Y = pos.Y - height
 		dp.Width = width
 		dp.Height = height
 
-		drawPos = append(drawPos, dp)
+		drawRects = append(drawRects, dp)
 
 	}
+
+	return drawRects
 
 	// lineColor := randomColor()
 

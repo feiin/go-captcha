@@ -5,7 +5,7 @@ type Point struct {
 	Y int
 }
 
-type DrawPos struct {
+type DrawRect struct {
 	X      int
 	Y      int
 	Width  int

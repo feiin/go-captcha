@@ -10,17 +10,31 @@ import (
 	"os"
 )
 
+type CaptchaStyle int32
+
+const (
+	CaptchaStyle_Normal   CaptchaStyle = 0
+	CaptchaStyle_Behavior CaptchaStyle = 1
+)
+
 type Config struct {
 	FontColors     []color.Color
-	BackgroupColor color.Color
-	FontSize       int
-	MaxRotate      int
+	BackgroupColor color.Color //default white
+	FontSize       int         //default 56
+	MaxRotate      int         //default 30
+	Style          CaptchaStyle
 }
 
 type Captcha struct {
 	Width  int
 	Height int
 	Config Config
+}
+
+type CaptchaResult struct {
+	DrawRects   []DrawRect
+	Text        string
+	ImageBase64 string
 }
 
 func NewCaptcha(width, height int) *Captcha {
@@ -54,12 +68,24 @@ func (cp *Captcha) SetFontColors(colors ...color.Color) {
 
 }
 
+//SetFontSize 字体大小
+func (cp *Captcha) SetFontSize(fontSize int) {
+	cp.Config.FontSize = fontSize
+}
+
+//SetFontSize 字体大小
+func (cp *Captcha) SetSytle(style CaptchaStyle) {
+	cp.Config.Style = style
+}
+
 //SetBackgroundColor 设置背景颜色
 func (cp *Captcha) SetBackgroundColor(color color.Color) {
 	cp.Config.BackgroupColor = color
 }
 
-func (cp *Captcha) GenCaptchaImage() (string, error) {
+func (cp *Captcha) GenCaptchaImage() (CaptchaResult, error) {
+
+	result := CaptchaResult{}
 
 	c := Canvas{
 		Width:  cp.Width,
@@ -68,11 +94,12 @@ func (cp *Captcha) GenCaptchaImage() (string, error) {
 		Config: cp.Config,
 	}
 
+	text := "3567"
 	c.DrawBackgroud()
 
 	c.DrawLines(5)
 
-	c.DrawString("3567中")
+	drawRects := c.DrawString(text)
 
 	c.DrawCircles(120)
 
@@ -81,11 +108,15 @@ func (cp *Captcha) GenCaptchaImage() (string, error) {
 	imageBytes, err := encodingWithPng(c)
 
 	if err != nil {
-		return "", err
+		return result, err
 	}
 
+	result.DrawRects = drawRects
+	result.ImageBase64 = fmt.Sprintf("data:%s;base64,%s", "image/png", base64.StdEncoding.EncodeToString(imageBytes))
+	result.Text = text
+
 	writeImageFile("./test.png", imageBytes)
-	return fmt.Sprintf("data:%s;base64,%s", "image/png", base64.StdEncoding.EncodeToString(imageBytes)), nil
+	return result, nil
 
 }
 
