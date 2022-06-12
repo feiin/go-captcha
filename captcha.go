@@ -94,7 +94,7 @@ func (cp *Captcha) SetBackgroundColor(color color.Color) {
 	cp.Config.BackgroupColor = color
 }
 
-func (cp *Captcha) GenCaptchaImage() (CaptchaResult, error) {
+func (cp *Captcha) GenCaptchaImage(text string) (CaptchaResult, error) {
 
 	result := CaptchaResult{}
 
@@ -105,7 +105,7 @@ func (cp *Captcha) GenCaptchaImage() (CaptchaResult, error) {
 		Config: cp.Config,
 	}
 
-	text := "3567"
+	// text := "3567"
 	c.DrawBackgroud()
 
 	c.DrawLines(5)
@@ -126,7 +126,7 @@ func (cp *Captcha) GenCaptchaImage() (CaptchaResult, error) {
 	result.ImageBase64 = fmt.Sprintf("data:%s;base64,%s", "image/png", base64.StdEncoding.EncodeToString(imageBytes))
 	result.Text = text
 
-	writeImageFile("./test.png", imageBytes)
+	// writeImageFile("./test.png", imageBytes)
 	return result, nil
 
 }
