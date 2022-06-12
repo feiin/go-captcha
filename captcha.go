@@ -11,8 +11,10 @@ import (
 )
 
 type Config struct {
-	FrontColors    []color.Color
+	FontColors     []color.Color
 	BackgroupColor color.Color
+	FontSize       int
+	MaxRotate      int
 }
 
 type Captcha struct {
@@ -25,14 +27,15 @@ func NewCaptcha(width, height int) *Captcha {
 	cp := Captcha{Width: width, Height: height}
 
 	config := Config{}
-	config.FrontColors = []color.Color{
+	config.FontColors = []color.Color{
 		color.RGBA{R: uint8(66), G: uint8(153), B: uint8(244), A: uint8(255)},
 		color.RGBA{R: uint8(234), G: uint8(67), B: uint8(53), A: uint8(255)},
 		color.RGBA{R: uint8(251), G: uint8(188), B: uint8(5), A: uint8(255)},
 		color.RGBA{R: uint8(52), G: uint8(168), B: uint8(83), A: uint8(255)},
 	}
 	config.BackgroupColor = color.White
-
+	config.FontSize = 56
+	config.MaxRotate = 30
 	cp.Config = config
 	return &cp
 
@@ -44,9 +47,9 @@ func (cp *Captcha) SetFontColors(colors ...color.Color) {
 		return
 	}
 
-	cp.Config.FrontColors = cp.Config.FrontColors[:0]
+	cp.Config.FontColors = cp.Config.FontColors[:0]
 	for _, cr := range colors {
-		cp.Config.FrontColors = append(cp.Config.FrontColors, cr)
+		cp.Config.FontColors = append(cp.Config.FontColors, cr)
 	}
 
 }

@@ -151,7 +151,7 @@ func (c *Canvas) DrawString(text string) {
 
 		pos := c.randomFontPosition(56)
 
-		fontImg, areaPoint := c.DrawFont(string(ch), c.Config.FrontColors)
+		fontImg, areaPoint := c.DrawFont(string(ch), c.Config.FontColors)
 
 		minX := areaPoint.MinX
 		maxX := areaPoint.MaxX
@@ -202,7 +202,7 @@ func (c *Canvas) DrawString(text string) {
 
 //DrawFont 绘制验证码字
 func (c *Canvas) DrawFont(fontText string, fontColors []color.Color) (*Palette, *AreaPoint) {
-	fontSize := 56
+	fontSize := c.Config.FontSize
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -223,7 +223,7 @@ func (c *Canvas) DrawFont(fontText string, fontColors []color.Color) (*Palette, 
 	dc.SetDst(canvas)
 
 	// 文字大小
-	dc.SetFontSize(float64(56))
+	dc.SetFontSize(float64(fontSize))
 
 	// 文字颜色
 	fontColor := image.NewUniform(rColor)
@@ -238,7 +238,7 @@ func (c *Canvas) DrawFont(fontText string, fontColors []color.Color) (*Palette, 
 	}
 
 	//旋转角度
-	canvas.Rotate(randomInt(-30, 30))
+	canvas.Rotate(randomInt(-c.Config.MaxRotate, c.Config.MaxRotate))
 	ap := c.calcImageSpace(canvas)
 	return canvas, ap
 
