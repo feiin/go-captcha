@@ -255,9 +255,14 @@ func (c *Canvas) DrawFont(fontText string, fontColors []color.Color) (*Palette, 
 
 	canvas := NewPalette(image.Rect(0, 0, fontSize, fontSize), p)
 
+	font := defaultFont
+	if c.Config.Font != nil {
+		font = c.Config.Font
+	}
+
 	dc := freetype.NewContext()
 	dc.SetDPI(float64(72))
-	dc.SetFont(defaultFont)
+	dc.SetFont(font)
 	dc.SetClip(canvas.Bounds())
 	dc.SetDst(canvas)
 

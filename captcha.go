@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"github.com/golang/freetype/truetype"
 	"image"
 	"image/color"
 	"image/png"
@@ -23,6 +24,7 @@ type Config struct {
 	FontSize       int         //default 56
 	MaxRotate      int         //default 30
 	Style          CaptchaStyle
+	Font           *truetype.Font //字体
 }
 
 type Captcha struct {
@@ -66,6 +68,15 @@ func (cp *Captcha) SetFontColors(colors ...color.Color) {
 		cp.Config.FontColors = append(cp.Config.FontColors, cr)
 	}
 
+}
+
+//SetFont 设置字体颜色
+func (cp *Captcha) SetFont(font *truetype.Font) {
+	if font == nil {
+		return
+	}
+
+	cp.Config.Font = font
 }
 
 //SetFontSize 字体大小
