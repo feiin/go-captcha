@@ -147,7 +147,7 @@ func (cp *Captcha) GenRandomNormalCaptcha(length int) (CaptchaResult, error) {
 }
 
 //GenBehaviorCaptcha 生成中文点击验证码 - 点击行为验证码
-func (cp *Captcha) GenBehaviorCaptcha() (CaptchaResult, error) {
+func (cp *Captcha) GenBehaviorCNCaptcha() (CaptchaResult, error) {
 
 	ix := rand.Intn(len(CNChars))
 	return cp.GenCaptchaImage(CNChars[ix])
