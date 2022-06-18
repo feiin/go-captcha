@@ -27,8 +27,11 @@ func TestGenGenBehaviorCaptcha(t *testing.T) {
 
 	cpt := NewCaptcha(260, 100)
 	cpt.SetBackgroundColor(color.RGBA{R: uint8(20), G: uint8(8), B: uint8(100), A: uint8(255)})
-	// cpt.Config.Style = CaptchaStyle_Behavior
+	cpt.Config.Style = CaptchaStyle_Behavior
 	cpt.Config.MaxRotate = 20
+
+	t.Logf("cpt.Config: %+v ", cpt.Config)
+
 	result, err := cpt.GenBehaviorCNCaptcha()
 	t.Logf("GenCaptchaImage: %+v %+v", result, err)
 }

@@ -19,6 +19,9 @@ golang 实现普通验证码,同时支持中文汉字点击行为验证码
 
 ![](./previews/test_2.png)
 
+![](./previews/test_3.png)
+
+
 ## Quick Start 使用
 
 *普通验证码*

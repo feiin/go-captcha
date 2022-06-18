@@ -147,6 +147,7 @@ func (c *Canvas) getFontPostions(text string) []Point {
 	chCount := utf8.RuneCountInString(text)
 
 	var points []Point
+
 	if c.Config.Style == CaptchaStyle_Normal {
 
 		padding := c.Config.FontSize / 2
@@ -164,6 +165,7 @@ func (c *Canvas) getFontPostions(text string) []Point {
 
 		for i := 0; i < chCount; i++ {
 			p := c.randomFontPosition(56)
+
 			points = append(points, p)
 		}
 	}

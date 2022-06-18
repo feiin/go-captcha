@@ -128,7 +128,7 @@ func (cp *Captcha) GenCaptchaImage(text string) (CaptchaResult, error) {
 	result.ImageBase64 = fmt.Sprintf("data:%s;base64,%s", "image/png", base64.StdEncoding.EncodeToString(imageBytes))
 	result.Text = text
 
-	// writeImageFile("./previews/test.png", imageBytes)
+	writeImageFile("./previews/test.png", imageBytes)
 	return result, nil
 
 }
