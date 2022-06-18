@@ -8,10 +8,9 @@ import (
 	"image/color"
 	"image/draw"
 	"math"
-	"unicode/utf8"
-
 	"math/rand"
 	"time"
+	"unicode/utf8"
 )
 
 //go:embed fonts/*
@@ -178,7 +177,8 @@ func (c *Canvas) DrawString(text string) []DrawRect {
 	var drawRects []DrawRect
 	textPos := c.getFontPostions(text)
 
-	for index, ch := range text {
+	var index = 0
+	for _, ch := range text {
 
 		pos := textPos[index]
 
@@ -216,6 +216,8 @@ func (c *Canvas) DrawString(text string) []DrawRect {
 		dp.Height = height
 
 		drawRects = append(drawRects, dp)
+
+		index = index + 1
 
 	}
 

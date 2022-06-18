@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math/rand"
 	"os"
 )
 
@@ -94,6 +95,7 @@ func (cp *Captcha) SetBackgroundColor(color color.Color) {
 	cp.Config.BackgroupColor = color
 }
 
+//GenCaptchaImage 生成文字的验证码图片
 func (cp *Captcha) GenCaptchaImage(text string) (CaptchaResult, error) {
 
 	result := CaptchaResult{}
@@ -126,9 +128,63 @@ func (cp *Captcha) GenCaptchaImage(text string) (CaptchaResult, error) {
 	result.ImageBase64 = fmt.Sprintf("data:%s;base64,%s", "image/png", base64.StdEncoding.EncodeToString(imageBytes))
 	result.Text = text
 
-	// writeImageFile("./test.png", imageBytes)
+	// writeImageFile("./previews/test.png", imageBytes)
 	return result, nil
 
+}
+
+//GenNormalRandomCaptcha 随机验证码 - 普通验证码
+func (cp *Captcha) GenRandomNormalCaptcha(length int) (CaptchaResult, error) {
+	var buff bytes.Buffer
+
+	for i := 0; i < length; i++ {
+		ix := rand.Intn(length)
+		buff.WriteByte(Alphabets[ix])
+	}
+
+	return cp.GenCaptchaImage(buff.String())
+
+}
+
+//GenBehaviorCaptcha 生成中文点击验证码 - 点击行为验证码
+func (cp *Captcha) GenBehaviorCaptcha() (CaptchaResult, error) {
+
+	ix := rand.Intn(len(CNChars))
+	return cp.GenCaptchaImage(CNChars[ix])
+
+}
+
+//ValidBehaviorCaptcha 验证行为点击验证码是否正确
+func ValidBehaviorCaptcha(cr CaptchaResult, userPoints []Point) bool {
+	//字符数量不相等
+	return ValidBehaviorRects(cr.DrawRects, userPoints)
+}
+
+//ValidBehaviorRects 验证行为点是否在验证码矩形中
+func ValidBehaviorRects(rects []DrawRect, userPoints []Point) bool {
+
+	if len(userPoints) != len(rects) {
+		return false
+	}
+
+	for i := 0; i < len(userPoints); i++ {
+		realRect := rects[i]
+		userPos := userPoints[i]
+
+		if !PointInRect(userPos, realRect) {
+			return false
+		}
+	}
+	return true
+
+}
+
+//PointInRect 验证点是否在矩形中
+func PointInRect(p Point, rect DrawRect) bool {
+	if p.X >= rect.X && p.X <= rect.X+rect.Width && p.Y >= rect.Y && p.Y <= rect.Y+rect.Height {
+		return true
+	}
+	return false
 }
 
 func encodingWithPng(img image.Image) (encodeResult []byte, err error) {
@@ -146,6 +202,7 @@ func encodingWithPng(img image.Image) (encodeResult []byte, err error) {
 
 }
 
+//writeImageFile tmp
 func writeImageFile(filepath string, imageBytes []byte) {
 	file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
