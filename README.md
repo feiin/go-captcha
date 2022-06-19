@@ -116,3 +116,6 @@ cpt.Config.FontSize = 24 //等同cpt.SetFontSize(24)
 
 
 ```
+
+## LICENSE
+MIT
