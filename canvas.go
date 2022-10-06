@@ -335,21 +335,20 @@ func (c *Canvas) calcImageSpace(pa *Palette) *AreaPoint {
 }
 
 func (c *Canvas) randomFontPosition(fontSize int) Point {
-	minX := fontSize
+	minX := 0
 	minY := fontSize
-
 	maxX := c.Width - fontSize
-	maxY := c.Height - fontSize
+	maxY := c.Height
 
 	x := randomInt(minX, maxX)
 	y := randomInt(minY, maxY)
 
 	return Point{x, y}
-
 }
 
 //randomInt 返回随机数 [min,max)
 func randomInt(min, max int) int {
+	// rand.Seed(time.Now().UnixNano())
 	if min >= max || max == 0 {
 		return max
 	}
