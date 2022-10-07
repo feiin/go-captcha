@@ -1,15 +1,15 @@
 package captcha
 
 type Point struct {
-	X int
-	Y int
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 type DrawRect struct {
-	X      int
-	Y      int
-	Width  int
-	Height int
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 func NewPoint(x int, y int) *Point {

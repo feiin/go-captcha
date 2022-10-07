@@ -35,9 +35,9 @@ type Captcha struct {
 }
 
 type CaptchaResult struct {
-	DrawRects   []DrawRect
-	Text        string
-	ImageBase64 string
+	DrawRects   []DrawRect `json:"draw_rect"`
+	Text        string     `json:"text"`
+	ImageBase64 string     `json:"image_base64"`
 }
 
 func NewCaptcha(width, height int) *Captcha {
